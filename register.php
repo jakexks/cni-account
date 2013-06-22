@@ -57,17 +57,19 @@ else {
 include("secrets.php");
 $helper = new CBHelper($appCode, $appSecret, $password);
 
-$object = array("id" => hash("sha256", $_POST['firstname'] . $_POST['lastname'] . $_POST['password']),
+$id=hash("sha256", $_POST['firstname'] . $_POST['lastname'] . $_POST['password']);
+
+$object = array("id" => $id,
 "first_name" => $_POST['firstname'],
 "last_name" => $_POST['lastname']);
 
-$search = $helper->search_document("user", array("id" => hash("sha256", $_POST['firstname'] . $_POST['lastname'] . $_POST['password'])));
+$search = $helper->search_document("user", array("id" => $id));
 if(sizeof($search["message"]) != 0) {
 	echo "User already exists";
 }
 else {
 	$helper->insert_document($object, "user");
-	exit("Success!");
+	header("Location: profile.php?i=" . $id);
 }
 }
 ?>
